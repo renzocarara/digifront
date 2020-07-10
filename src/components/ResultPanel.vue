@@ -3,7 +3,7 @@
 
         <v-row justify="center">
             <!-- riquadro URL Info -->
-            <v-col cols="12" sm="4">
+            <v-col cols="12" md="4">
                 <v-card class="mx-auto">
 
                   <v-list disabled min-height="400" dense class="urlinfo-panel">
@@ -21,7 +21,7 @@
             </v-col>
 
             <!-- riquadro Response Redirect -->
-            <v-col cols="12" sm="4" class="response-panel redirect-panel">
+            <v-col cols="12" md="4" class="response-panel redirect-panel">
                 <v-card class="mx-auto">
 
                     <v-list disabled min-height="400" dense class="response-panel">
@@ -33,7 +33,6 @@
                                             <span v-text="redirect.title"></span>
                                             <span v-text="redirect.value" ></span>
                                         </v-list-item-subtitle>
-
                                     </v-list-item-content>
                               </v-list-item>        
                     </v-list>
@@ -42,7 +41,7 @@
             </v-col>
 
             <!-- riquadro Response -->
-            <v-col cols="12" sm="4">
+            <v-col cols="12" md="4">
               <v-card class="mx-auto">
 
                   <v-list disabled min-height="400" dense class="response-panel">
@@ -125,5 +124,10 @@ export default {
 
 .redirect-panel {
     display: none;
+}
+
+.multi-row {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
 }
 </style>;

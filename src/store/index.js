@@ -173,19 +173,20 @@ export default new Vuex.Store({
         // setto il valore di 'statusCode' e in accordo quello di descriptiveText
         SET_STATUS_CODE(state, value) {
             state.statusCode = value;
-            console.log('stringa:', '' + state.statusCode + '');
             state.descriptiveText = STATUS_CODES['' + state.statusCode + ''];
+            console.log('descriptiveText now is:', state.descriptiveText);
         },
         // setto il valore di 'statusText'
         SET_STATUS_TEXT(state, value) {
             state.statusText = value;
             // console.log('state.statusText now is:', state.statusText);
         },
-        // setto il valore di 'statusText'
+        // setto il valore di 'statusError'
         SET_STATUS_ERROR(state, value) {
             state.statusError = value;
             // console.log('state.statusError now is:', state.statusError);
-        }, // setto il valore di 'statusText'
+        },
+        // setto il valore di 'descriptiveText'
         SET_DESCRIPTIVE_TEXT(state, value) {
             state.descriptiveText = value;
             // console.log('state.descriptiveText:', state.descriptiveText);

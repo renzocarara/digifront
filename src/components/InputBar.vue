@@ -194,7 +194,6 @@ export default {
             // il server ha risposto con uno status code che è 2XX
 
             this.setStatusError('');
-            this.$store.commit('SET_DESCRIPTIVE_TEXT', '');
             this.setStatusCode(response.status);
             this.setStatusText(response.statusText);
             this.setResponsePanel(response.headers);
@@ -212,9 +211,8 @@ export default {
                 // il server ha risposto ma con uno status code che non è 2XX
 
                 console.log('RESPONSE WITH ERROR');
-                this.$store.commit('SET_DESCRIPTIVE_TEXT', '');
                 this.setStatusCode(error.response.status);
-                this.setStatusText('');
+                this.setStatusText(error.response.statusText);
                 this.setStatusError('');
                 this.setResponsePanel(error.response.headers);
                 this.moveToResultView();
@@ -256,6 +254,7 @@ export default {
                 this.$store.commit('SET_STATUS_CODE', status);
             } else {
                 this.$store.commit('SET_STATUS_CODE', '-');
+                this.$store.commit('SET_DESCRIPTIVE_TEXT', '');
             }
         },
         setStatusError(message) {
