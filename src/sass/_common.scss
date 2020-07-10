@@ -1,0 +1,46 @@
+body {
+    font-family: 'Nunito', sans-serif;
+}
+
+input:focus,
+button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.no-border {
+    border: none;
+}
+
+.view-title {
+    color: $title-color;
+    font-size: 44px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 400;
+    text-align: center;
+}
+
+.light-gray-bcg {
+    background-color: $lightgray-color;
+}
+
+// --------------------------- TRANSITIONs -----------------------------------
+// transizione in ingresso, per apparire gradualmente
+.fade-enter-active {
+    transition: opacity 1.5s;
+}
+.fade-enter {
+    opacity: 0;
+}
+
+// transizione in uscita, per scomparire gradualmente
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-leave-to {
+    opacity: 0;
+}
