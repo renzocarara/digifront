@@ -7,53 +7,38 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         // ------------------------------- INPUTs --------------------------------------
+        inputProtocol: 'https://', // protocollo
         inputVerb: null, // metodo selezionato per eseguire la 'http request'
         items: ['GET', 'POST', 'PUT', 'DELETE'], // metodi previsti per le richieste
-
-        inputProtocol: 'https://', // protocollo
 
         inputUrl: '', // url in input per l'invio della 'http request'
 
         // dati per la 'http request' ricavati dall'url inserito nella InputBar
-        inputUrlInfos: [
-            { title: 'DOMAIN', value: '-' },
-            { title: 'SCHEME', value: '-' },
-            { title: 'PATH', value: '-' }
-        ],
+        inputUrlInfos: { domain: '-', scheme: '-', path: '-' },
 
         parameterList: [], // parametri della 'http request'
         headerList: [], // headers della 'http request'
 
-        // ------------------------------- OUTPUTs --------------------------------------
-        sentProtocol: 'https://', // protocollo inviato nella richiesta http
+        // ------------------------------- DATA SENT --------------------------------------
+        sentProtocol: '', // protocollo inviato nella richiesta http
         sentUrl: '', // url inviato nella richiesta http
         sentVerb: '', // verbo inviato nella richiesta http
-        sentUrlInfos: [
-            // info estratte dall'url inviato nella richiesta http
-            { title: 'DOMAIN', value: '-' },
-            { title: 'SCHEME', value: '-' },
-            { title: 'PATH', value: '-' }
-        ],
+        // info estratte dall'url inviato nella richiesta http
+        sentUrlInfos: { domain: '-', scheme: '-', path: '-' },
 
+        // ------------------------------- RESPONSEs --------------------------------------
         // dati della response alla 'http request'
-        responses: [
-            { title: '', value: '-' },
-            { title: 'Date:', value: '-' },
-            { title: 'Server:', value: '-' }
-        ],
+        responses: { statusline: '-', date: '-', server: '-' },
 
         // dati della response redirect alla 'http request'
-        redirects: [
-            { title: '', value: '-' },
-            { title: 'Location: ', value: '-' },
-            { title: 'Server: ', value: '-' }
-        ],
+        redirects: { statusline: '-', location: '-', server: '-' },
 
-        statusError: '', // messaggio d'errore in caso la request non venga completata con successo
+        statusError: '', // messaggio d'errore per l'utente in caso la request non venga completata con successo
         statusCode: '', // stato della response dopo la request
-        statusText: '', // stato testuale
-        descriptiveText: '', // testo descrittivo per esplicitare meglio lo status
+        statusText: '', // stato testuale della response
+        descriptiveText: '', // testo descrittivo per l'utente per esplicitare meglio lo status ricevuto
 
+        // ------------------------------------- DB -----------------------------------------
         id: '1' // id della richiesta/risposta che viene scritta nel DB
     },
     getters: {
@@ -173,8 +158,11 @@ export default new Vuex.Store({
         // setto il valore di 'statusCode' e in accordo quello di descriptiveText
         SET_STATUS_CODE(state, value) {
             state.statusCode = value;
-            state.descriptiveText = STATUS_CODES['' + state.statusCode + ''];
-            console.log('descriptiveText now is:', state.descriptiveText);
+            if (state.statusCode != '') {
+                state.descriptiveText =
+                    STATUS_CODES['' + state.statusCode + ''].descriptiveText;
+            }
+            // console.log('descriptiveText now is:', state.descriptiveText);
         },
         // setto il valore di 'statusText'
         SET_STATUS_TEXT(state, value) {
@@ -192,6 +180,7 @@ export default new Vuex.Store({
             // console.log('state.descriptiveText:', state.descriptiveText);
         },
         SET_COPY_INPUT_TO_SENT(state) {
+            state.sentProtocol = state.inputProtocol;
             state.sentVerb = state.inputVerb;
             state.sentUrl = state.inputUrl;
         }

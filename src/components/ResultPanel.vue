@@ -6,32 +6,57 @@
             <v-col cols="12" md="4">
                 <v-card class="mx-auto">
 
-                  <v-list disabled min-height="400" dense class="urlinfo-panel">
+                  <v-list disabled min-height="300" dense class="urlinfo-panel">
                       <v-subheader class="px-4">URL INFO</v-subheader>
-                            <v-list-item class="urlinfo-item"
-                                v-for="(urlInfo, i) in urlInfos" :key="i">
-                                    <v-list-item-content>
-                                        <strong><v-list-item-title v-text="urlInfo.title"></v-list-item-title></strong>
-                                        <div class="list-item-subtitle" v-text="urlInfo.value"></div>
-                                    </v-list-item-content>
-                            </v-list-item>
+                      <v-list-item class="urlinfo-item">
+                              <v-list-item-content>
+                                  <strong><v-list-item-title>DOMAIN</v-list-item-title></strong>
+                                  <div class="list-item-subtitle">{{ urlInfos.domain }}</div>
+                              </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item class="urlinfo-item">
+                              <v-list-item-content>
+                                  <strong><v-list-item-title>SCHEME</v-list-item-title></strong>
+                                  <div class="list-item-subtitle">{{ urlInfos.scheme }}</div>
+                              </v-list-item-content>
+                      </v-list-item>
+                      <v-list-item class="urlinfo-item">
+                              <v-list-item-content>
+                                  <strong><v-list-item-title>PATH</v-list-item-title></strong>
+                                  <div class="list-item-subtitle">{{ urlInfos.path }}</div>
+                              </v-list-item-content>
+                      </v-list-item>
                   </v-list>
 
               </v-card>
             </v-col>
 
             <!-- riquadro Response Redirect -->
-            <v-col cols="12" md="4" class="response-panel redirect-panel">
+            <v-col cols="12" md="4" class="redirect-panel">
                 <v-card class="mx-auto">
 
-                    <v-list disabled min-height="400" dense class="response-panel">
+                    <v-list disabled min-height="300" dense class="response-panel">
                         <v-subheader class=" response-subheader px-4">RESPONSE</v-subheader>
-                              <v-list-item class="response-item"
-                                v-for="(redirect, i) in redirects" :key="i">
+                              <v-list-item class="response-item">
                                     <v-list-item-content>
                                         <v-list-item-subtitle>
-                                            <span v-text="redirect.title"></span>
-                                            <span v-text="redirect.value" ></span>
+                                            <span>{{ redirects.statusline }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                              </v-list-item>
+                              <v-list-item class="response-item">
+                                    <v-list-item-content>
+                                        <v-list-item-subtitle>
+                                            <span>Location: </span>
+                                            <span>{{ redirects.location }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                              </v-list-item>
+                              <v-list-item class="response-item">
+                                    <v-list-item-content>
+                                        <v-list-item-subtitle>
+                                            <span>Server: </span>
+                                            <span>{{ redirects.server }}</span>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                               </v-list-item>        
@@ -44,18 +69,32 @@
             <v-col cols="12" md="4">
               <v-card class="mx-auto">
 
-                  <v-list disabled min-height="400" dense class="response-panel">
-                      <v-subheader class=" response-subheader px-4">RESPONSE</v-subheader>
-                            <v-list-item class="response-item"
-                              v-for="(response, i) in responses" :key="i">
-                                  <v-list-item-content>
-                                      <v-list-item-subtitle>
-                                            <span v-text="response.title"></span>
-                                            <span v-text="response.value"></span>
-                                      </v-list-item-subtitle>
-                                  </v-list-item-content>
-                            </v-list-item>        
-                  </v-list>
+                 <v-list disabled min-height="300" dense class="response-panel">
+                        <v-subheader class=" response-subheader px-4">RESPONSE</v-subheader>
+                              <v-list-item class="response-item">
+                                    <v-list-item-content>
+                                        <v-list-item-subtitle>
+                                            <span>{{ responses.statusline }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                              </v-list-item>
+                              <v-list-item class="response-item">
+                                    <v-list-item-content>
+                                        <v-list-item-subtitle>
+                                            <span>Date: </span>
+                                            <span>{{ responses.date }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                              </v-list-item>
+                              <v-list-item class="response-item">
+                                    <v-list-item-content>
+                                        <v-list-item-subtitle>
+                                            <span>Server: </span>
+                                            <span>{{ responses.server }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                              </v-list-item>        
+                    </v-list>
 
               </v-card>
             </v-col>

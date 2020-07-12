@@ -32,6 +32,8 @@
                     <v-text-field :readonly=isReadView class="pt-0" 
                         v-model="url"
                         :rules="urlRules"
+                        counter="255"
+                        maxlength="255"
                         label="URL"
                         required
                         @keypress.13="handleSubmit"
@@ -57,6 +59,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     computed: {
         // definisco delle computed property che sono associate a delle variabili dello "store",
@@ -129,11 +133,9 @@ export default {
         handleSubmit() {
             console.log('cliccato send');
 
-            this.copyInputToSent();
-            this.setUrlInfoPanel();
-
-            // fare la chiamata axios tramite una action dello store???
-            this.callAxios();
+            this.copyInputToSent(); // salvo le informazioni sulla richiesta da inviare
+            this.setUrlInfoPanel(); // inizio a popolare il riquadro "URL INFO"
+            this.makeHttpRequest(); // faccio una chiamata axios per eseguire la "http request"
         },
 
         copyInputToSent() {
@@ -141,50 +143,45 @@ export default {
         },
 
         setUrlInfoPanel() {
-            // riempio il riquadro URL INFO
+            // riempio il riquadro "URL INFO"
 
-            //creo un oggetto JS ti tipo "URL", che diverse proprietà specifiche degli url
+            //creo un oggetto JS di tipo "URL", che ha diverse proprietà specifiche degli url
             let url = new URL(
                 this.$store.state.inputProtocol + this.$store.state.inputUrl
             );
 
-            let payload = [
-                {
-                    title: 'DOMAIN',
-                    value: url.hostname
-                },
-                {
-                    title: 'SCHEME',
-                    value: url.protocol.slice(0, -1).toUpperCase() // tolgo il carattere ':' con slice()
-                },
-                { title: 'PATH', value: url.pathname }
-            ];
+            let payload = {
+                domain: url.hostname,
+                scheme: url.protocol.slice(0, -1).toUpperCase(), // tolgo il carattere ':' con slice()
+                path: url.pathname
+            };
             this.$store.commit('SET_SENT_URL_INFOS', payload);
         },
 
-        callAxios() {
-            this.$http({
+        makeHttpRequest() {
+            axios({
                 method: this.$store.state.inputVerb,
                 url:
                     this.$store.state.inputProtocol +
                     this.$store.state.inputUrl,
-                // url: 'https://covid-193.p.rapidapi.com/statistics',
                 headers: {
-                    // ***TBD gestione headers
-                    // esempio:
-                    // 'content-type': 'application/json',
+                    // ***TBD gestione headers inseriti dall'utente
+                    'content-type': 'application/json',
+
                     //  'x-rapidapi-key': 'your-api-key-here'
+                    'x-rapidapi-key':
+                        '0708d8f6a0msh5e394cccc50dbcdp11905cjsn5c63890b8b90'
                 },
                 params: {
-                    // ***TBD gestione parametri
+                    // ***TBD gestione parametri inseriti dall'utente
                 }
             })
                 .then(response => {
-                    console.log('AXIOS SUCCESS');
+                    console.log('Http Request SUCCESS');
                     this.handleSuccess(response);
                 })
                 .catch(error => {
-                    console.log('AXIOS ERROR');
+                    console.log('Http Request ERROR');
                     this.handleError(error);
                 });
         },
@@ -192,11 +189,10 @@ export default {
         handleSuccess(response) {
             //
             // il server ha risposto con uno status code che è 2XX
+            console.log('httpreq response', response);
 
-            this.setStatusError('');
-            this.setStatusCode(response.status);
-            this.setStatusText(response.statusText);
-            this.setResponsePanel(response.headers);
+            this.grabResponses(response);
+            this.APICallWriteDB();
             this.moveToResultView();
         },
 
@@ -207,18 +203,15 @@ export default {
             // 3. ci sono degli errori nel creare la richiesta, non viene quindi inviato nulla
 
             if (error.response) {
-                //
-                // il server ha risposto ma con uno status code che non è 2XX
-
+                // 1. il server ha risposto ma con uno status code che non è 2XX
                 console.log('RESPONSE WITH ERROR');
-                this.setStatusCode(error.response.status);
-                this.setStatusText(error.response.statusText);
-                this.setStatusError('');
-                this.setResponsePanel(error.response.headers);
-                this.moveToResultView();
+                console.log('httpreq error.response', error.response);
+
+                this.grabResponses(error.response);
+                this.APICallWriteDB();
+                // this.moveToResultView();
             } else if (error.request) {
-                //
-                // il server non ha risposto
+                // 2. il server non ha risposto
 
                 console.log('NO RESPONSE');
                 this.setStatusError(error.message);
@@ -229,10 +222,12 @@ export default {
                     'No response from server!'
                 );
                 this.clearResponsePanel();
-                this.moveToResultView();
+                // NOTA: scrivo nel DB la richiesta fatta anche se non c'e' una risposta del server
+                this.APICallWriteDB();
+
+                // this.moveToResultView();
             } else {
-                //
-                // errore nel costruire la richiesta
+                // 3- errore nel costruire la richiesta
 
                 console.log('INVALID REQUEST');
                 this.setStatusError('Invalid request');
@@ -241,15 +236,26 @@ export default {
                 this.$store.commit('SET_DESCRIPTIVE_TEXT', 'No request sent!');
                 this.clearResponsePanel();
 
+                // NOTA:mnon scrivo nulla nel DB, poichè non è partita nemmeno la richiesta
+
                 // ***TBD disabilitare/resettare il link alla read, poichè non ho scritto nel DB
                 // a meno che non decido di scriver lo stesso nel DB una request errata senza response??!!
             }
 
+            // in tutti i casi, response, no response, richiesta non valida, vado sempre sulla view: "result"
             this.moveToResultView();
         },
 
+        grabResponses(response) {
+            // prende li dati della response (anche nel caso di response con errore) e li "stora" nello "state"
+            this.setStatusError('');
+            this.setStatusCode(response.status);
+            this.setStatusText(response.statusText);
+            this.setResponsePanel(response.headers);
+        },
+
         setStatusCode(status) {
-            // extract Status Code
+            // estrae lo Status Code dalla response
             if (status != undefined) {
                 this.$store.commit('SET_STATUS_CODE', status);
             } else {
@@ -258,7 +264,7 @@ export default {
             }
         },
         setStatusError(message) {
-            // extract Error message
+            // setta un Error message da visualizzare in pagina
             if (message != undefined) {
                 this.$store.commit('SET_STATUS_ERROR', message);
             } else {
@@ -267,7 +273,7 @@ export default {
         },
 
         setStatusText(statusText) {
-            // extract Status Text
+            // estrae lo Status Text dalla response
             if (statusText != undefined) {
                 this.$store.commit('SET_STATUS_TEXT', statusText);
             } else {
@@ -276,58 +282,111 @@ export default {
         },
 
         moveToResultView() {
-            // verifico se sono già sulla pagina di 'result', altrimenti ci vado
+            // verifico se sono già sulla pagina di 'result', se non ci sono ci vado
             if (this.$route.name != 'result') {
                 this.$router.push('result');
             }
         },
 
         clearResponsePanel() {
-            let noData = [
-                { title: '', value: '-' },
-                { title: 'Date:', value: '-' },
-                { title: 'Server:', value: '-' }
-            ];
-
+            // rimuovo tutte le info dal riquadro RESPONSE (visualizzo dei trattini)
+            let noData = { statusline: '-', date: '-', server: '-' };
             this.$store.commit('SET_RESPONSES', noData);
         },
 
         setResponsePanel(headers) {
+            // inserisco le info sul riquadro RESPONSE
+
             // ***TBD gestione del caso REDIRECT
-            // response.redirect è un booleane che mi dice se ci sono redirects
+            // response.redirect è un boolean che mi dice se ci sono redirects
 
             // extract data from response
             let httpVersion = 'x.x'; // ***TBD estrazione del http version dalla response
-            let payload = [
-                {
-                    title: '',
-                    value:
-                        this.$store.state.statusCode != ''
-                            ? 'HTTP/' +
-                              httpVersion +
-                              ' ' +
-                              this.$store.state.statusCode +
-                              ' ' +
-                              this.$store.state.statusText
-                            : '-'
-                },
-                {
-                    title: 'Date:',
-                    value:
-                        headers.date != undefined && headers.date != null
-                            ? headers.date
-                            : '-'
-                },
-                {
-                    title: 'Server:',
-                    value:
-                        headers.server != undefined && headers.server != null
-                            ? headers.server
-                            : '-'
-                }
-            ];
+            let payload = {
+                statusline:
+                    this.$store.state.statusCode != ''
+                        ? 'HTTP/' +
+                          httpVersion +
+                          ' ' +
+                          this.$store.state.statusCode +
+                          ' ' +
+                          this.$store.state.statusText
+                        : '-',
+                date:
+                    headers.date != undefined && headers.date != null
+                        ? headers.date
+                        : '-',
+                server:
+                    headers.server != undefined && headers.server != null
+                        ? headers.server
+                        : '-'
+            };
 
             this.$store.commit('SET_RESPONSES', payload);
+        },
+
+        APICallWriteDB() {
+            // fccio una chiamata axios in POST, alle API esposte da "digiback", per scrivere nel DB
+
+            console.log('APICallWriteDB started...');
+
+            // creo il dato da scrivere nel DB
+            let data = {
+                // public key
+                api_token:
+                    '8He1fq8r5krxoEahHiA2MqaIDV173FRPztF16dtkxkc5yxrBjMzPkbvOwC7yAhuCbozU1DGPpHLaIUtP',
+
+                // richiesta e risposta della "http request"
+                method: this.$store.state.sentVerb,
+                url: this.$store.state.sentUrl,
+
+                domain: this.$store.state.sentUrlInfos.domain,
+                scheme: this.$store.state.sentUrlInfos.scheme,
+                path: this.$store.state.sentUrlInfos.path,
+
+                version: this.$store.state.responses.statusline,
+                status: this.$store.state.statusCode,
+                date: this.$store.state.responses.date,
+                server: this.$store.state.responses.server,
+                location: this.$store.state.responses.location
+            };
+
+            let headers = {
+                'content-type': 'application/json'
+                // accept: 'application/json'
+            };
+
+            let url = 'https://digiback.herokuapp.com/api/HTTP/POST';
+            // let url = 'http://localhost:8000/api/HTTP/POST';  // testing in locale
+
+            axios
+                .post(url, data, headers)
+                .then(response => {
+                    this.writeDBSuccess(response);
+                })
+                .catch(error => {
+                    this.writeDBError(error);
+                });
+        },
+
+        writeDBSuccess(response) {
+            console.log('APICallWriteDB succeded');
+            console.log('response:\n', response);
+            // console.log('response.config:\n', response.config);
+
+            // scrivo e attivo link di read su pagina result, con id restituito dalla API
+            // (ci vorrà una variabile booleana in 'state', tipo recordWritten o LinkActivable)
+        },
+        writeDBError(error) {
+            console.log('APICallWriteDB failed');
+            console.log('error:\n', error);
+            // console.log('error.message:\n', error.message);
+            // console.log('error.response:\n', error.response);
+            // console.log('error.response.config:\n', error.response.config);
+
+            // scrivo e attivo link di read su pagina result, con id restituito dalla API
+            // (ci vorrà una variabile booleana in 'state', tipo recordWritten o LinkActivable)
+            // nota: nel caso "invalid request" non si applica
         }
     }
 };
