@@ -12,6 +12,11 @@ button:focus {
     visibility: hidden;
 }
 
+.progress-circle {
+    display: none;
+    position: absolute;
+}
+
 .no-border {
     border: none;
 }

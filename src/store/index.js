@@ -39,7 +39,8 @@ export default new Vuex.Store({
         descriptiveText: '', // testo descrittivo per l'utente per esplicitare meglio lo status ricevuto
 
         // ------------------------------------- DB -----------------------------------------
-        id: '1' // id della richiesta/risposta che viene scritta nel DB
+        id: '1', // id della richiesta/risposta che viene scritta nel DB
+        shareLink: false // stabilisce se c'è un link da mostrare nella pagina Result/Read
     },
     getters: {
         // ottengo la lista corrente dei parametri inseriti dall'utente
@@ -62,7 +63,7 @@ export default new Vuex.Store({
         getRedirects(state) {
             return state.redirects;
         },
-        // ottengo l'id della 'http request' appena eseguita
+        // ottengo l'id della 'http request' corrente
         getId(state) {
             return state.id;
         },
@@ -179,10 +180,19 @@ export default new Vuex.Store({
             state.descriptiveText = value;
             // console.log('state.descriptiveText:', state.descriptiveText);
         },
+        // copio i dati in input nella variabile che contiene i dati "spediti" con la "http Request"
         SET_COPY_INPUT_TO_SENT(state) {
             state.sentProtocol = state.inputProtocol;
             state.sentVerb = state.inputVerb;
             state.sentUrl = state.inputUrl;
+        },
+        // setto l'id della richiesta corrente
+        SET_ID(state, value) {
+            state.id = value;
+        },
+        // stabilisco se visualizzare o meno il Share Link
+        SET_SHARE_LINK(state, value) {
+            state.shareLink = value;
         }
     },
 

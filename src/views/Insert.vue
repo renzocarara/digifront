@@ -23,10 +23,7 @@ export default {
     data() {
         return {};
     },
-    mounted() {
-        // clear the status messages
-        this.$store.commit('SET_STATUS_CODE', '');
-    }
+    mounted() {}
 };
 </script>
 

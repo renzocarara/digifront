@@ -86,7 +86,7 @@ export const STATUS_CODES = {
         descriptiveText: ''
     },
     '511': {
-        statusText: 'etwork Authentication Required',
+        statusText: 'Network Authentication Required',
         descriptiveText: ''
     }
 };

@@ -13,7 +13,7 @@
                 </v-col>
               </v-row>
 
-              <v-row>
+              <v-row justify="center">
                 <v-col cols="3" class="column-spacing">
                     <v-select :disabled=isReadView class="mt-0 verb-select" 
                         v-model="verb"
@@ -40,9 +40,8 @@
                     >
                     </v-text-field>
                 </v-col>
-
-                <v-col cols="2" class="column-spacing">
-                    <v-btn class="mt-2" :class="isReadView ? 'd-none' : ''"
+                <v-col :cols="2" class="column-spacing"  :class="isReadView ? 'd-none' : ''">
+                    <v-btn class="mt-2"
                         small
                         :disabled="!validity"
                         color="primary"
@@ -52,7 +51,9 @@
                           <v-icon class="mobile-send-btn">mdi-magnify</v-icon>
                     </v-btn>
                 </v-col>
-
+                <v-col cols="12" class="text-center progress-circle">
+                    <v-progress-circular indeterminate color="red"></v-progress-circular>
+                </v-col>
               </v-row>
             </v-container>
         </v-form>
@@ -170,7 +171,7 @@ export default {
 
                     //  'x-rapidapi-key': 'your-api-key-here'
                     'x-rapidapi-key':
-                        '0708d8f6a0msh5e394cccc50dbcdp11905cjsn5c63890b8b90'
+                        '0708d8f6a0msh5e394cccc50dbcdp11905cjsn5c63890b8b90' // for testing
                 },
                 params: {
                     // ***TBD gestione parametri inseriti dall'utente
@@ -235,6 +236,8 @@ export default {
                 this.setStatusText('');
                 this.$store.commit('SET_DESCRIPTIVE_TEXT', 'No request sent!');
                 this.clearResponsePanel();
+
+                this.$store.commit('SET_SHARE_LINK', false);
 
                 // NOTA:mnon scrivo nulla nel DB, poichè non è partita nemmeno la richiesta
 
@@ -356,8 +359,8 @@ export default {
                 // accept: 'application/json'
             };
 
-            let url = 'https://digiback.herokuapp.com/api/HTTP/POST';
-            // let url = 'http://localhost:8000/api/HTTP/POST';  // testing in locale
+            // let url = 'https://digiback.herokuapp.com/api/HTTP/POST';
+            let url = 'http://localhost:8000/api/HTTP/POST'; // testing in locale
 
             axios
                 .post(url, data, headers)
@@ -374,8 +377,12 @@ export default {
             console.log('response:\n', response);
             // console.log('response.config:\n', response.config);
 
-            // scrivo e attivo link di read su pagina result, con id restituito dalla API
-            // (ci vorrà una variabile booleana in 'state', tipo recordWritten o LinkActivable)
+            // **TBD, eventuale popup di avviso all'utente "SUCCESS: DB updated!"
+
+            // salvo l'id (restituitomi dall'API) nello "store"
+            this.$store.commit('SET_ID', response.data.id);
+            // rendo lo Share Link visibile
+            this.$store.commit('SET_SHARE_LINK', true);
         },
         writeDBError(error) {
             console.log('APICallWriteDB failed');
@@ -384,9 +391,11 @@ export default {
             // console.log('error.response:\n', error.response);
             // console.log('error.response.config:\n', error.response.config);
 
-            // scrivo e attivo link di read su pagina result, con id restituito dalla API
-            // (ci vorrà una variabile booleana in 'state', tipo recordWritten o LinkActivable)
-            // nota: nel caso "invalid request" non si applica
+            // **TBD gestione errori scrittura su DB,
+            // popup di avviso all'utente "ERROR: DB access failed! No data saved""
+
+            // rendo lo Share Link non visibile
+            this.$store.commit('SET_SHARE_LINK', false);
         }
     }
 };
@@ -410,6 +419,9 @@ export default {
 }
 .mobile-send-btn {
     display: none;
+}
+.v-progress-circular {
+    margin: 1rem;
 }
 
 @media screen and (max-width: 599px) {
