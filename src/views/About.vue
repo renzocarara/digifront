@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-container>
-      <h1 class="view-title">Result</h1>
-      <p>Questa applicazione permette di effettuare delle richiesta HTTP.</p>
+      <h1 class="view-title">About</h1>
+      <p>Questa applicazione permette di effettuare delle richieste HTTP.</p>
       <ul>
       <li><strong>Insert</strong>: l'utente inserisce un URL, un metodo (GET, PUT,...) degli eventuali parametri e degli eventuali headers</li>
       <li><strong>Result</strong>: l'esito della richiesta HTTP viene visualizzato e contestualmente la risposta viene salvata, assieme alla richiesta, in un DB</li>

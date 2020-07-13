@@ -39,19 +39,26 @@
                     dense
                     nav
                     >
-                        <v-list-item
-                        v-for="item in items"
-                        :key="item.title"
-                        link
-                        >
-                        <v-list-item-icon>
-                            <v-icon>{{ item.icon }}</v-icon>
-                        </v-list-item-icon>
+                        <v-list-item v-for="item in items" :key="item.title" link>
+                            <v-list-item-icon>
+                                <v-icon>{{ item.icon }}</v-icon>
+                            </v-list-item-icon>
 
-                        <v-list-item-content>
-                            <router-link class="my-link" :to="item.route">{{ item.title }}</router-link>
-                        </v-list-item-content>
+                            <v-list-item-content>
+                                <router-link class="my-link" :to="item.route">{{ item.title }}</router-link>
+                            </v-list-item-content>
                         </v-list-item>
+
+                         <v-list-item link>
+                            <v-list-item-icon>
+                                <v-icon>mdi-text-box-outline</v-icon>
+                            </v-list-item-icon>
+
+                            <v-list-item-content>
+                                <router-link class="my-link" :to="id">Read</router-link>
+                            </v-list-item-content>
+                        </v-list-item>
+
                     </v-list>
         </v-navigation-drawer>
 
@@ -79,13 +86,19 @@ export default {
             drawer: false,
             items: [
                 { title: 'Home', icon: 'mdi-view-dashboard', route: '/' },
+                { title: 'About', icon: 'mdi-help-box', route: '/about' },
                 { title: 'Insert', icon: 'mdi-import', route: '/insert' },
-                { title: 'Result', icon: 'mdi-export', route: '/result' },
-                { title: 'Read', icon: 'mdi-text-box-outline', route: '/read' },
-                { title: 'About', icon: 'mdi-help-box', route: '/about' }
+                { title: 'Result', icon: 'mdi-export', route: '/result' }
+                // { title: 'Read', icon: 'mdi-text-box-outline', route: '/read' },
             ],
             right: null
         };
+    },
+    computed: {
+        id() {
+            // leggo il valore id dallo store e lo ritorno in formato stringa
+            return this.$store.state.id.toString();
+        }
     }
 };
 </script>

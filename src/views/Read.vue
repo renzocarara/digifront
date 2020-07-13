@@ -2,7 +2,8 @@
     <v-container>
 
       <h1 class="view-title">Read</h1>
-      <StatusCode class="hidden"/>
+      <h3 class="text-center"> record: {{ $route.params.id }}</h3>
+      <!-- <StatusCode class="hidden"/> -->
       <InputBar/>
       <ResultPanel/>
       <ShareLink/>
@@ -11,14 +12,14 @@
 </template>
 
 <script>
-import StatusCode from '@/components/StatusCode.vue';
+// import StatusCode from '@/components/StatusCode.vue';
 import InputBar from '@/components/InputBar.vue';
 import ResultPanel from '@/components/ResultPanel.vue';
 import ShareLink from '@/components/ShareLink.vue';
 
 export default {
     components: {
-        StatusCode,
+        // StatusCode,
         InputBar,
         ResultPanel,
         ShareLink
