@@ -13,6 +13,7 @@
          L'applicazione BACKEND è scritta in Laravel + Bootstrap. <br>
          L'applicazione FRONTEND è scritta in Vue ed utilizza Vue-router, Vuex e Vuetify<br>
       </p>
+        <v-img class="my-10" src="../assets/digitest_flowchart.jpg" mav-width="452" max-height="565" contain alt="Digitest Flowchart"></v-img>
 
 
     </v-container>
