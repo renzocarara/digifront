@@ -45,17 +45,18 @@
                             </v-list-item-icon>
 
                             <v-list-item-content>
-                                <router-link class="my-link" :to="item.route">{{ item.title }}</router-link>
+                               <router-link class="" :to="item.name">{{ item.title }}</router-link>
                             </v-list-item-content>
                         </v-list-item>
 
-                         <v-list-item link>
+                         <!-- gestisco separatamente la rotta "Read" perchè è dinamica (cioè ha un parametro) -->
+                         <v-list-item>
                             <v-list-item-icon>
                                 <v-icon>mdi-text-box-outline</v-icon>
                             </v-list-item-icon>
 
                             <v-list-item-content>
-                                <router-link class="my-link" :to="id">Read</router-link>
+                                <a @click="moveTo('/'+ id)" class="my-link">Read</a>
                             </v-list-item-content>
                         </v-list-item>
 
@@ -85,11 +86,15 @@ export default {
         return {
             drawer: false,
             items: [
-                { title: 'Home', icon: 'mdi-view-dashboard', route: '/' },
-                { title: 'About', icon: 'mdi-help-box', route: '/about' },
-                { title: 'Insert', icon: 'mdi-import', route: '/insert' },
-                { title: 'Result', icon: 'mdi-export', route: '/result' }
-                // { title: 'Read', icon: 'mdi-text-box-outline', route: '/read' },
+                {
+                    title: 'Home',
+                    icon: 'mdi-view-dashboard',
+                    name: '/' // NOTA: devo mettere il path, perchè se metto "home" lui cerca una rotta "/home"
+                    // che non esiste e lo interpreta come rotta "read" (cioè "/parametro")
+                },
+                { title: 'About', icon: 'mdi-help-box', name: 'about' },
+                { title: 'Insert', icon: 'mdi-import', name: 'insert' },
+                { title: 'Result', icon: 'mdi-export', name: 'result' }
             ],
             right: null
         };
@@ -97,7 +102,30 @@ export default {
     computed: {
         id() {
             // leggo il valore id dallo store e lo ritorno in formato stringa
+            // uso poi questa computed property, nel mio 'template'
             return this.$store.state.id.toString();
+        }
+    },
+    methods: {
+        moveTo(routePath) {
+            // per la rotta "read" anzichè usare la <router-link> uso questo metodo invocato al click sul link,
+            // in modo da poter effettuare dei controlli/settaggi prima del cambio rotta.
+            // In particolare setto una variabile booleana dello store, che viene poi testata
+            // (dalla beforeEnter() nel router) per capire se devo cambiare rotta o meno
+            // Distinguo 2 situazioni: devo passare alla rotta "read" se l'utente ha premuto su un link dell'applicazione
+            // per cambiare rotta, non devo passare alla rotta "read" se l'utente ha modificato a mano l'URL
+            // nella barra degli indirizzi, in questo ultimo caso lo ridirigo sulla "home"
+
+            // verifico di non essere già sulla rotta dove voglio andare
+            if (this.$route.path != routePath) {
+                // setto
+                this.$store.commit('SET_PROG_NAV', true);
+                // console.log('App: progNav->', this.$store.state.progNav);
+                // console.log('this.id:', this.id);
+                // console.log('routePath', routePath);
+                // vado sulla rotta richiesta
+                this.$router.push({ path: routePath });
+            }
         }
     }
 };
@@ -105,4 +133,8 @@ export default {
 
 <style lang="scss">
 //
+.my-link {
+    text-align: left;
+    text-decoration: underline;
+}
 </style>

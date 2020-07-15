@@ -39,8 +39,11 @@ export default new Vuex.Store({
         descriptiveText: '', // testo descrittivo per l'utente per esplicitare meglio lo status ricevuto
 
         // ------------------------------------- DB -----------------------------------------
-        id: '1', // id della richiesta/risposta che viene scritta nel DB
-        shareLink: false // stabilisce se c'è un link da mostrare nella pagina Result/Read
+        id: '-', // id della "richiesta/risposta" che viene scritta nel DB
+
+        // --------------------------------------- General --------------------------------------
+        shareLink: false, // stabilisce se c'è un link da mostrare nella pagina Result/Read
+        progNav: false // stabilisce se un cambio di rotta è stato programmato (true) o è l'utente che cambia manualmente l'URL
     },
     getters: {
         // ottengo la lista corrente dei parametri inseriti dall'utente
@@ -193,6 +196,10 @@ export default new Vuex.Store({
         // stabilisco se visualizzare o meno il Share Link
         SET_SHARE_LINK(state, value) {
             state.shareLink = value;
+        },
+        SET_PROG_NAV(state, value) {
+            // console.log('progNav set to:', state.progNav);
+            state.progNav = value;
         }
     },
 

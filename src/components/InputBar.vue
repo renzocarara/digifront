@@ -5,10 +5,10 @@
               <v-row>
                 <v-col cols="12" class="column-spacing">
                     <v-radio-group :class="isResultView || isReadView ? 'hidden' : ''" row dense v-model="protocol" class="protocol">
-                        <v-radio color="gray" label="https://" value="https://"></v-radio>
-                        <v-icon v-if="protocol=='https://'" class="mx-3">mdi-lock-outline</v-icon>
-                        <v-icon v-else class="mx-3">mdi-lock-open-outline</v-icon>
-                        <v-radio class="ml-4" color="gray" label="http://" value="http://"></v-radio>
+                        <v-radio :color="protocol=='https://' ? 'green' : 'gray'" label="https://" value="https://"></v-radio>
+                        <v-icon color="green" v-if="protocol=='https://'" class="mx-3">mdi-lock-outline</v-icon>
+                        <v-icon color="orange" v-else class="mx-3">mdi-lock-open-outline</v-icon>
+                        <v-radio :color="protocol=='http://' ? 'orange' : 'gray'" class="ml-4" label="http://" value="http://"></v-radio>
                     </v-radio-group> 
                 </v-col>
               </v-row>
