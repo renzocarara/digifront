@@ -2,9 +2,9 @@
     <v-container v-if="isLinkToShare">
         <h2 class="share-title text-center">share</h2>
         <div class="text-center">
-            <!-- <v-btn :disabled=isReadView height="auto" class="share-button py-2"  :to="id" rounded color="#f0f0f0"> -->
-            <v-btn :disabled=isReadView height="auto" class="share-button py-2"   @click="moveTo('/'+ id)" rounded color="#f0f0f0">
-                renzocarara.github.io/digifront/{{ id }}</v-btn>
+            <v-btn :disabled=isReadView height="auto" class="share-button py-2"
+                   @click="moveTo('/'+ id)" rounded color="#f0f0f0">
+                   renzocarara.github.io/digifront/{{ id }}</v-btn>
         </div>
     </v-container>
 </template>

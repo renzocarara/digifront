@@ -43,7 +43,10 @@ export default new Vuex.Store({
 
         // --------------------------------------- General --------------------------------------
         shareLink: false, // stabilisce se c'è un link da mostrare nella pagina Result/Read
-        progNav: false // stabilisce se un cambio di rotta è stato programmato (true) o è l'utente che cambia manualmente l'URL
+        progNav: false, // stabilisce se la rotta "read" richiesta verrà seguita o meno
+        // se è l'utente che cambia manualmente l'URL la rotta non viene seguita
+
+        idsList: [] // lista degli id dei records presenti nel DB
     },
     getters: {
         // ottengo la lista corrente dei parametri inseriti dall'utente
@@ -66,22 +69,22 @@ export default new Vuex.Store({
         getRedirects(state) {
             return state.redirects;
         },
-        // ottengo l'id della 'http request' corrente
-        getId(state) {
-            return state.id;
-        },
-        // ottengo l'URL inviato nella richiesta
-        getSentUrl(state) {
-            return state.sentUrl;
-        },
-        // ottengo il verbo inviato nella richiesta
-        getSentVerb(state) {
-            return state.sentVerb;
-        },
-        // ottengo le URL info inviate nella richiesta
-        getSentUrlInfos(state) {
-            return state.sentUrlInfos;
-        },
+        // // ottengo l'id della 'http request' corrente
+        // getId(state) {
+        //     return state.id;
+        // },
+        // // ottengo l'URL inviato nella richiesta
+        // getSentUrl(state) {
+        //     return state.sentUrl;
+        // },
+        // // ottengo il verbo inviato nella richiesta
+        // getSentVerb(state) {
+        //     return state.sentVerb;
+        // },
+        // // ottengo le URL info inviate nella richiesta
+        // getSentUrlInfos(state) {
+        //     return state.sentUrlInfos;
+        // },
         // leggo lo StatusCode
         getStatusCode(state) {
             return state.statusCode;
@@ -200,6 +203,12 @@ export default new Vuex.Store({
         SET_PROG_NAV(state, value) {
             // console.log('progNav set to:', state.progNav);
             state.progNav = value;
+        },
+        SET_IDS_LIST(state, value) {
+            state.idsList = value;
+        },
+        SET_ADD_ID_TO_LIST(state, value) {
+            state.idsList.push(value);
         }
     },
 

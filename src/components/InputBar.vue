@@ -381,6 +381,9 @@ export default {
 
             // salvo l'id (restituitomi dall'API) nello "store"
             this.$store.commit('SET_ID', response.data.id);
+            // aggiorno la lista degli id presenti nel DB
+            this.$store.commit('SET_ADD_ID_TO_LIST', response.data.id);
+
             // rendo lo Share Link visibile
             this.$store.commit('SET_SHARE_LINK', true);
         },

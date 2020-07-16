@@ -75,10 +75,17 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 import MyFooter from '@/components/MyFooter.vue';
 
 export default {
     name: 'App',
+    mounted() {
+        // leggo tutti i record del DB
+        console.log('APICallReadAllRecords() called...');
+        this.APICallReadAllRecords();
+    },
     components: {
         MyFooter
     },
@@ -107,6 +114,39 @@ export default {
         }
     },
     methods: {
+        APICallReadAllRecords() {
+            // leggo il DB per ricavare gli "id" dei record presenti
+            axios({
+                method: 'GET',
+                url: 'http://localhost:8000/api/HTTP/GET',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                params: {
+                    // public key
+                    api_token:
+                        '8He1fq8r5krxoEahHiA2MqaIDV173FRPztF16dtkxkc5yxrBjMzPkbvOwC7yAhuCbozU1DGPpHLaIUtP'
+                }
+            })
+                .then(response => {
+                    console.log('READ DB SUCCESS');
+                    console.log('response.data', response.data);
+                    let ids = [];
+                    for (let index = 0; index < response.data.length; index++) {
+                        // creo un array contenente tutti gi id dei records presenti su DB
+                        ids.push(response.data[index].id);
+                    }
+                    console.log('ids:', ids);
+                    // setto il dato globale dello store con l'array di id appena creato
+                    this.$store.commit('SET_IDS_LIST', ids);
+                    // this.handleSuccess(response);
+                })
+                .catch(error => {
+                    console.log('READ DB FAILED');
+                    console.log('error', error);
+                    // this.handleError(error);
+                });
+        },
         moveTo(routePath) {
             // per la rotta "read" anzichè usare la <router-link> uso questo metodo invocato al click sul link,
             // in modo da poter effettuare dei controlli/settaggi prima del cambio rotta.
