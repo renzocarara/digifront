@@ -118,14 +118,19 @@ export default {
         },
 
         urlInfos() {
-            // return this.isReadView ? this.sentUrlInfos : this.inputUrlInfos;
-            return this.$store.state.sentUrlInfos;
+            return this.isReadView
+                ? this.$store.state.dbUrlInfos
+                : this.$store.state.sentUrlInfos;
         },
         responses() {
-            return this.$store.state.responses;
+            return this.isReadView
+                ? this.$store.state.dbResponses
+                : this.$store.state.responses;
         },
         redirects() {
-            return this.$store.state.redirects;
+            return this.isReadView
+                ? this.$store.state.dbRedirects
+                : this.$store.state.redirects;
         }
     },
     methods: {}

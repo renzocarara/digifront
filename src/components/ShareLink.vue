@@ -14,8 +14,11 @@ export default {
     components: {},
     computed: {
         id() {
-            // leggo il valore id dallo store e lo ritorno in formato stringa
-            return this.$store.state.id.toString();
+            // leggo il valore id o dbId dallo store e lo ritorno in formato stringa
+            // id viene visualizzato sulla Result view, dbId vie visualizzato sulla Read view
+            return this.isReadView
+                ? this.$store.state.dbId.toString()
+                : this.$store.state.id.toString();
         },
 
         isLinkToShare() {
@@ -31,10 +34,10 @@ export default {
         moveTo(routePath) {
             // verifico di non essere già sulla rotta dove voglio andare
             if (this.$route.path != routePath) {
+                //copio i dati della view "result" nelle variabili per la view "read"
+                this.$store.commit('SET_COPY_SENT_TO_DB');
+
                 this.$store.commit('SET_PROG_NAV', true);
-                console.log('App: progNav->', this.$store.state.progNav);
-                console.log('this.id:', this.id);
-                console.log('routePath', routePath);
                 // cambio rotta e vado su quella richiesta
                 this.$router.push({ path: routePath });
             }

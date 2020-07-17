@@ -108,17 +108,19 @@ export default {
     },
     computed: {
         id() {
-            // leggo il valore id dallo store e lo ritorno in formato stringa
+            // leggo il valore dbId dallo store e lo ritorno in formato stringa
             // uso poi questa computed property, nel mio 'template'
-            return this.$store.state.id.toString();
+            // return this.$store.state.id.toString();
+            return this.$store.state.dbId.toString();
         }
     },
     methods: {
         APICallReadAllRecords() {
-            // leggo il DB per ricavare gli "id" dei record presenti
+            // leggo il DB per ricavare tutti gli "id" dei record presenti
             axios({
                 method: 'GET',
-                url: 'http://localhost:8000/api/HTTP/GET',
+                url: 'https://digiback.herokuapp.com/api/HTTP/GET',
+                // url: 'http://localhost:8000/api/HTTP/GET', // testing in locale
                 headers: {
                     'content-type': 'application/json'
                 },
@@ -129,32 +131,71 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('READ DB SUCCESS');
-                    console.log('response.data', response.data);
-                    let ids = [];
-                    for (let index = 0; index < response.data.length; index++) {
-                        // creo un array contenente tutti gi id dei records presenti su DB
-                        ids.push(response.data[index].id);
-                    }
-                    console.log('ids:', ids);
-                    // setto il dato globale dello store con l'array di id appena creato
-                    this.$store.commit('SET_IDS_LIST', ids);
-                    // this.handleSuccess(response);
+                    this.handleSuccess(response);
                 })
                 .catch(error => {
-                    console.log('READ DB FAILED');
-                    console.log('error', error);
-                    // this.handleError(error);
+                    this.handleError(error);
                 });
         },
+
+        handleSuccess(response) {
+            console.log('READ DB SUCCESS');
+            // console.log('response.data', response.data);
+            let ids = [];
+            for (let index = 0; index < response.data.length; index++) {
+                // creo un array contenente tutti gi id dei records presenti su DB
+                ids.push(response.data[index].id);
+            }
+            console.log('ids:', ids);
+            // setto il dato globale dello store con l'array di id appena creato
+            this.$store.commit('SET_IDS_LIST', ids);
+
+            // setto l'ultimo record (se esiste) di quelli letti dal DB, come quello da visualizzare sulla view "read"
+            if (response.data.length) {
+                let lastIndex = response.data.length - 1; // indice dell'ultimo record nell'array
+
+                let lastId = ids[lastIndex];
+                this.$store.commit('SET_DB_ID', lastId);
+
+                this.$store.commit(
+                    'SET_DB_VERB',
+                    response.data[lastIndex].request.method
+                );
+                this.$store.commit(
+                    'SET_DB_URL',
+                    response.data[lastIndex].request.url
+                );
+
+                let urlInfos = {
+                    domain: response.data[lastIndex].request.domain,
+                    scheme: response.data[lastIndex].request.scheme,
+                    path: response.data[lastIndex].request.path
+                };
+                this.$store.commit('SET_DB_URL_INFOS', urlInfos);
+
+                let responses = {
+                    statusline: response.data[lastIndex].response.statusline, // http version + status + statusText
+                    date: response.data[lastIndex].response.date,
+                    server: response.data[lastIndex].response.server
+                };
+                this.$store.commit('SET_DB_RESPONSES', responses);
+            }
+        },
+        handleError(error) {
+            console.log('READ DB FAILED');
+            alert('DB Read failed!');
+            console.log('error', error);
+        },
+
         moveTo(routePath) {
             // per la rotta "read" anzichè usare la <router-link> uso questo metodo invocato al click sul link,
             // in modo da poter effettuare dei controlli/settaggi prima del cambio rotta.
             // In particolare setto una variabile booleana dello store, che viene poi testata
             // (dalla beforeEnter() nel router) per capire se devo cambiare rotta o meno
-            // Distinguo 2 situazioni: devo passare alla rotta "read" se l'utente ha premuto su un link dell'applicazione
-            // per cambiare rotta, non devo passare alla rotta "read" se l'utente ha modificato a mano l'URL
-            // nella barra degli indirizzi, in questo ultimo caso lo ridirigo sulla "home"
+            // Distinguo 2 situazioni:
+            // DEVO passare alla rotta "read" se l'utente ha premuto su un link dell'applicazione per cambiare rotta,
+            // NON DEVO passare alla rotta "read" se l'utente ha modificato a mano l'URL nella barra degli indirizzi,
+            // in questo ultimo caso lo ridirigo sulla "home"
 
             // verifico di non essere già sulla rotta dove voglio andare
             if (this.$route.path != routePath) {

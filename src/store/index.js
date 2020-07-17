@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+
+// array che elenca tutti gli status code con associato lo StatusText e un DescriptiveText
 import { STATUS_CODES } from '@/const.js';
 
 Vue.use(Vuex);
@@ -10,12 +12,8 @@ export default new Vuex.Store({
         inputProtocol: 'https://', // protocollo
         inputVerb: null, // metodo selezionato per eseguire la 'http request'
         items: ['GET', 'POST', 'PUT', 'DELETE'], // metodi previsti per le richieste
-
         inputUrl: '', // url in input per l'invio della 'http request'
-
-        // dati per la 'http request' ricavati dall'url inserito nella InputBar
-        inputUrlInfos: { domain: '-', scheme: '-', path: '-' },
-
+        inputUrlInfos: { domain: '-', scheme: '-', path: '-' }, // dati ricavati dall'url inserito nella InputBar
         parameterList: [], // parametri della 'http request'
         headerList: [], // headers della 'http request'
 
@@ -23,23 +21,24 @@ export default new Vuex.Store({
         sentProtocol: '', // protocollo inviato nella richiesta http
         sentUrl: '', // url inviato nella richiesta http
         sentVerb: '', // verbo inviato nella richiesta http
-        // info estratte dall'url inviato nella richiesta http
-        sentUrlInfos: { domain: '-', scheme: '-', path: '-' },
+        sentUrlInfos: { domain: '-', scheme: '-', path: '-' }, // info estratte dall'url inviato nella richiesta http
 
         // ------------------------------- RESPONSEs --------------------------------------
-        // dati della response alla 'http request'
-        responses: { statusline: '-', date: '-', server: '-' },
-
-        // dati della response redirect alla 'http request'
-        redirects: { statusline: '-', location: '-', server: '-' },
-
+        responses: { statusline: '-', date: '-', server: '-' }, // dati della response alla 'http request'
+        redirects: { statusline: '-', location: '-', server: '-' }, // dati della response redirect alla 'http request'
         statusError: '', // messaggio d'errore per l'utente in caso la request non venga completata con successo
         statusCode: '', // stato della response dopo la request
         statusText: '', // stato testuale della response
         descriptiveText: '', // testo descrittivo per l'utente per esplicitare meglio lo status ricevuto
 
         // ------------------------------------- DB -----------------------------------------
-        id: '-', // id della "richiesta/risposta" che viene scritta nel DB
+        id: '-', // id restituito dall'API dopo una scrittura sul DB
+        dbId: '-', // id letto dal DB o copiato da id
+        dbUrl: '', // // url letto dal DB o copiato dal corrispettivo "sent"
+        dbVerb: '', // verb letto dal DB o copiato dal corrispettivo "sent"
+        dbUrlInfos: { domain: '-', scheme: '-', path: '-' }, // urlInfos lette dal DB o copiate dal corrispettivo "sent"
+        dbResponses: { statusline: '-', date: '-', server: '-' }, // responses lette dal DB o copiate dal corrispettivo "sent"
+        dbRedirects: { statusline: '-', location: '-', server: '-' }, // redirects lette dal DB o copiate dal corrispettivo "sent"
 
         // --------------------------------------- General --------------------------------------
         shareLink: false, // stabilisce se c'è un link da mostrare nella pagina Result/Read
@@ -49,93 +48,82 @@ export default new Vuex.Store({
         idsList: [] // lista degli id dei records presenti nel DB
     },
     getters: {
-        // ottengo la lista corrente dei parametri inseriti dall'utente
         getParameterList(state) {
             return state.parameterList;
         },
-        // ottengo la lista corrente degli headers inseriti dall'utente
         getHeaderList(state) {
             return state.headerList;
         },
-        // ottengo le URL info estratte dall'url inserito nella InputBar
         getInputUrlInfos(state) {
             return state.inputUrlInfos;
         },
-        // ottengo i Response data
         getResponses(state) {
             return state.responses;
         },
-        // ottengo i Response data nel caso di Redirect
         getRedirects(state) {
             return state.redirects;
         },
-        // // ottengo l'id della 'http request' corrente
-        // getId(state) {
-        //     return state.id;
-        // },
-        // // ottengo l'URL inviato nella richiesta
-        // getSentUrl(state) {
-        //     return state.sentUrl;
-        // },
-        // // ottengo il verbo inviato nella richiesta
-        // getSentVerb(state) {
-        //     return state.sentVerb;
-        // },
-        // // ottengo le URL info inviate nella richiesta
-        // getSentUrlInfos(state) {
-        //     return state.sentUrlInfos;
-        // },
-        // leggo lo StatusCode
         getStatusCode(state) {
             return state.statusCode;
         },
-        // leggo lo StatusText
         getStatusText(state) {
             return state.statusText;
         },
-        // leggo lo StatusError
         getStatusError(state) {
             return state.statusError;
         },
-        // leggo lo StatusError
         getDescriptiveText(state) {
             return state.descriptiveText;
         }
     },
 
     mutations: {
-        // setto il valore di 'inputVerb'
         SET_INPUT_VERB(state, value) {
             state.inputVerb = value;
         },
-        // setto il valore di 'inputUrl'
         SET_INPUT_URL(state, value) {
             state.inputUrl = value;
         },
-        // setto il valore di 'inputProtocol'
         SET_INPUT_PROTOCOL(state, value) {
             state.inputProtocol = value;
         },
-        // setto il valore  'sentVerb'
+
         SET_SENT_VERB(state, value) {
             state.sentVerb = value;
         },
-        // setto il valore di'sentUrl'
         SET_SENT_URL(state, value) {
             state.sentUrl = value;
         },
-        // setto il valore di'sentProtocol'
         SET_SENT_PROTOCOL(state, value) {
             state.sentProtocol = value;
         },
-        // setto il valore di'sentUrlInfos'
         SET_SENT_URL_INFOS(state, value) {
             state.sentUrlInfos = value;
         },
-        // setto il valore di'responses'
+
         SET_RESPONSES(state, value) {
             state.responses = value;
         },
+        SET_REDIRECTS(state, value) {
+            state.redirects = value;
+        },
+
+        SET_DB_VERB(state, value) {
+            state.dbVerb = value;
+        },
+        SET_DB_URL(state, value) {
+            state.dbUrl = value;
+        },
+        SET_DB_URL_INFOS(state, value) {
+            state.dbUrlInfos = value;
+        },
+        SET_DB_RESPONSES(state, value) {
+            state.dbResponses = value;
+        },
+        SET_DB_REDIRECTS(state, value) {
+            state.dbRedirects = value;
+        },
+
         // inserisco un nuovo item nell'array parameterList
         SET_PL_PUSH_ITEM(state, value) {
             state.parameterList.push(value);
@@ -149,6 +137,7 @@ export default new Vuex.Store({
             // con splice() rimuovo a partire dalla posizione 'index' un numero di elementi indicati dal 2° parametro
             state.parameterList.splice(index, 1);
         },
+
         // inserisco un nuovo item nell'array headerList
         SET_HDR_PUSH_ITEM(state, value) {
             state.headerList.push(value);
@@ -162,6 +151,7 @@ export default new Vuex.Store({
             // con splice() rimuovo a partire dalla posizione 'index' un numero di elementi indicati dal 2° parametro (in questo caso 1 elemento)
             state.headerList.splice(index, 1);
         },
+
         // setto il valore di 'statusCode' e in accordo quello di descriptiveText
         SET_STATUS_CODE(state, value) {
             state.statusCode = value;
@@ -171,42 +161,60 @@ export default new Vuex.Store({
             }
             // console.log('descriptiveText now is:', state.descriptiveText);
         },
-        // setto il valore di 'statusText'
         SET_STATUS_TEXT(state, value) {
             state.statusText = value;
             // console.log('state.statusText now is:', state.statusText);
         },
-        // setto il valore di 'statusError'
         SET_STATUS_ERROR(state, value) {
             state.statusError = value;
             // console.log('state.statusError now is:', state.statusError);
         },
-        // setto il valore di 'descriptiveText'
         SET_DESCRIPTIVE_TEXT(state, value) {
             state.descriptiveText = value;
             // console.log('state.descriptiveText:', state.descriptiveText);
         },
+
         // copio i dati in input nella variabile che contiene i dati "spediti" con la "http Request"
         SET_COPY_INPUT_TO_SENT(state) {
             state.sentProtocol = state.inputProtocol;
             state.sentVerb = state.inputVerb;
             state.sentUrl = state.inputUrl;
         },
-        // setto l'id della richiesta corrente
+        // copio i dati spediti nella variabile dei dati memorizzati nel DB
+        SET_COPY_SENT_TO_DB(state) {
+            state.dbResponses = state.responses;
+            state.dbRedirects = state.redirects;
+            state.dbUrlInfos = state.sentUrlInfos;
+            state.dbVerb = state.sentVerb;
+            state.dbUrl = state.sentUrl;
+            state.dbId = state.id;
+        },
+
+        // setto l'id del record appena scritto
         SET_ID(state, value) {
             state.id = value;
         },
+        // setto l'id del record appena letto
+        SET_DB_ID(state, value) {
+            state.dbId = value;
+        },
+
         // stabilisco se visualizzare o meno il Share Link
         SET_SHARE_LINK(state, value) {
             state.shareLink = value;
         },
+
+        // setto un flag per abilitare o meno il cambio rotta verso la pagina "read"
         SET_PROG_NAV(state, value) {
             // console.log('progNav set to:', state.progNav);
             state.progNav = value;
         },
+
+        // inizializzo la lista degli id dei records presenti nel DB
         SET_IDS_LIST(state, value) {
             state.idsList = value;
         },
+        // aggiungo nella lista degli id, l'id dell'ultimo record appena aggiunto al DB
         SET_ADD_ID_TO_LIST(state, value) {
             state.idsList.push(value);
         }

@@ -70,29 +70,46 @@ export default {
             get() {
                 // se sono sulla view "Read" ritorno il valore precedentemente spedito nella http request
                 // altrimenti ritorno il valore che è attualmente visualizzato nella InputBar
-                return this.isReadView
-                    ? this.$store.state.sentVerb
-                    : this.$store.state.inputVerb;
+                let whichVerb;
+                if (this.isReadView) {
+                    whichVerb = this.$store.state.dbVerb;
+                } else if (this.isResultView) {
+                    whichVerb = this.$store.state.sentVerb;
+                } else {
+                    whichVerb = this.$store.state.inputVerb;
+                }
+                return whichVerb;
             },
             set(value) {
                 // se sono sulla view "Read" setto il valore precedentemente spedito nella http request
                 // altrimenti setto il valore che è attualmente visualizzato nella InputBar
-                this.isReadView
-                    ? this.$store.commit('SET_SENT_VERB', value)
-                    : this.$store.commit('SET_INPUT_VERB', value);
+
+                if (this.isReadView) {
+                    this.$store.commit('SET_DB_VERB', value);
+                } else {
+                    this.$store.commit('SET_INPUT_VERB', value);
+                }
             }
         },
 
         url: {
             get() {
-                return this.isReadView
-                    ? this.$store.state.sentUrl
-                    : this.$store.state.inputUrl;
+                let whichUrl;
+                if (this.isReadView) {
+                    whichUrl = this.$store.state.dbUrl;
+                } else if (this.isResultView) {
+                    whichUrl = this.$store.state.sentUrl;
+                } else {
+                    whichUrl = this.$store.state.inputUrl;
+                }
+                return whichUrl;
             },
             set(value) {
-                this.isReadView
-                    ? this.$store.commit('SET_SENT_URL', value)
-                    : this.$store.commit('SET_INPUT_URL', value);
+                if (this.isReadView) {
+                    this.$store.commit('SET_DB_URL', value);
+                } else {
+                    this.$store.commit('SET_INPUT_URL', value);
+                }
             }
         },
 
@@ -210,7 +227,6 @@ export default {
 
                 this.grabResponses(error.response);
                 this.APICallWriteDB();
-                // this.moveToResultView();
             } else if (error.request) {
                 // 2. il server non ha risposto
 
@@ -225,8 +241,6 @@ export default {
                 this.clearResponsePanel();
                 // NOTA: scrivo nel DB la richiesta fatta anche se non c'e' una risposta del server
                 this.APICallWriteDB();
-
-                // this.moveToResultView();
             } else {
                 // 3- errore nel costruire la richiesta
 
@@ -347,7 +361,7 @@ export default {
                 scheme: this.$store.state.sentUrlInfos.scheme,
                 path: this.$store.state.sentUrlInfos.path,
 
-                version: this.$store.state.responses.statusline,
+                statusline: this.$store.state.responses.statusline,
                 status: this.$store.state.statusCode,
                 date: this.$store.state.responses.date,
                 server: this.$store.state.responses.server,
@@ -359,8 +373,8 @@ export default {
                 // accept: 'application/json'
             };
 
-            // let url = 'https://digiback.herokuapp.com/api/HTTP/POST';
-            let url = 'http://localhost:8000/api/HTTP/POST'; // testing in locale
+            let url = 'https://digiback.herokuapp.com/api/HTTP/POST';
+            // let url = 'http://localhost:8000/api/HTTP/POST'; // testing in locale
 
             axios
                 .post(url, data, headers)
@@ -375,24 +389,22 @@ export default {
         writeDBSuccess(response) {
             console.log('APICallWriteDB succeded');
             console.log('response:\n', response);
-            // console.log('response.config:\n', response.config);
 
             // **TBD, eventuale popup di avviso all'utente "SUCCESS: DB updated!"
 
             // salvo l'id (restituitomi dall'API) nello "store"
-            this.$store.commit('SET_ID', response.data.id);
+            this.$store.commit('SET_ID', response.data.id); // per la result view
             // aggiorno la lista degli id presenti nel DB
             this.$store.commit('SET_ADD_ID_TO_LIST', response.data.id);
-
             // rendo lo Share Link visibile
             this.$store.commit('SET_SHARE_LINK', true);
         },
         writeDBError(error) {
             console.log('APICallWriteDB failed');
             console.log('error:\n', error);
-            // console.log('error.message:\n', error.message);
-            // console.log('error.response:\n', error.response);
-            // console.log('error.response.config:\n', error.response.config);
+            console.log('error.message:\n', error.message);
+            console.log('error.response:\n', error.response);
+            console.log('error.response.config:\n', error.response.config);
 
             // **TBD gestione errori scrittura su DB,
             // popup di avviso all'utente "ERROR: DB access failed! No data saved""
