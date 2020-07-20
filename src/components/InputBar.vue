@@ -29,7 +29,7 @@
                     </v-select> 
                 </v-col>
 
-                <v-col cols="7" sm="7" class="column-spacing">
+                <v-col cols="7" class="column-spacing">
                     <v-text-field :readonly=isReadView class="mt-0" 
                         v-model="url"
                         :rules="urlRules"

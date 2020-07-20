@@ -24,7 +24,7 @@
       <InputBar/>
       <ResultPanel/>
       <ShareLink/>
-      <!-- <SwypeTacho/> -->
+      <SwypeTacho/>
 
     </v-container>
 </template>
@@ -35,7 +35,7 @@ import axios from 'axios';
 import InputBar from '@/components/InputBar.vue';
 import ResultPanel from '@/components/ResultPanel.vue';
 import ShareLink from '@/components/ShareLink.vue';
-// import ShareLink from '@/components/SwypeTacho.vue';
+import ShareLink from '@/components/SwypeTacho.vue';
 
 export default {
     mounted() {
@@ -54,8 +54,8 @@ export default {
     components: {
         InputBar,
         ResultPanel,
-        ShareLink
-        // SwypeTacho
+        ShareLink,
+        SwypeTacho
     },
 
     computed: {
