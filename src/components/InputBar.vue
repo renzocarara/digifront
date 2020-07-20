@@ -192,8 +192,6 @@ export default {
             // preparo un oggetto dove inserire gli headers aggiunti dall'utente
             let allHeaders = {
                 'content-type': 'application/json'
-                // 'x-rapidapi-key':
-                //     '0708d8f6a0msh5e394cccc50dbcdp11905cjsn5c63890b8b90'
             };
             let hName, hValue;
             // ciclo headerList che mi contiene gli headers inseriti dall'utente ed estraggo solo quelli attivi
