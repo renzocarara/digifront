@@ -1,10 +1,10 @@
 <template>
     <v-footer
           app
+          absolute
           class="font-weight-medium my-footer"
           color="#fb4b3d"
           dark
-          
         >
           <v-col
             class="text-center"
