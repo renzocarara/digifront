@@ -83,7 +83,7 @@ export default {
     name: 'App',
     mounted() {
         // leggo tutti i record del DB
-        console.log('APICallReadAllRecords() called...');
+        // console.log('APICallReadAllRecords() called...');
         this.APICallReadAllRecords();
     },
     components: {
@@ -139,14 +139,14 @@ export default {
         },
 
         handleSuccess(response) {
-            console.log('READ DB SUCCESS');
+            // console.log('READ DB SUCCESS');
             // console.log('response.data', response.data);
             let ids = [];
             for (let index = 0; index < response.data.length; index++) {
                 // creo un array contenente tutti gi id dei records presenti su DB
                 ids.push(response.data[index].id);
             }
-            console.log('ids:', ids);
+            // console.log('ids:', ids);
             // setto il dato globale dello store con l'array di id appena creato
             this.$store.commit('SET_IDS_LIST', ids);
 
@@ -182,7 +182,7 @@ export default {
             }
         },
         handleError(error) {
-            console.log('READ DB FAILED');
+            // console.log('READ DB FAILED');
             alert('DB Read failed!');
             console.log('error', error);
         },

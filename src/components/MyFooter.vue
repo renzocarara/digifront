@@ -10,7 +10,7 @@
             class="text-center"
             cols="12"
           >
-             &copy; {{ new Date().getFullYear() }} - <strong>DigiTest</strong>
+             &copy; {{ new Date().getFullYear() }} - <strong>Renzo Carara</strong>
           </v-col>
     </v-footer>
 </template>

@@ -10,7 +10,7 @@
                         <v-list-item three-line class="px-1">
                             
                             <v-list-item-content>
-                                <v-list-item-title class="headline mb-1 text-center">Parameters</v-list-item-title>
+                                <v-list-item-title class="headline mb-1 text-center">Parameters/Data</v-list-item-title>
                                 <v-row>
                                     <!-- campo KEY -->
                                     <v-col cols="6">
@@ -34,7 +34,7 @@
                     <ol v-if="parameterList.length">
                         <!-- ciclo l'array di oggetti "parameterList" tramite un "v-for" -->
                         <li v-for="(item, index) in parameterList" :key="index" :class="item.status  ? '' : 'disabled'">
-                            <button @click="removeParam(item, index)"><v-icon>mdi-delete</v-icon></button>
+                            <button class="trash-hover" @click="removeParam(item, index)"><v-icon>mdi-delete</v-icon></button>
                             <!-- se status è "true" visualizzo una checkbox marcata -->
                             <button @click="toggleParam(index)" v-if="item.status"><strong><v-icon>mdi-check-box-outline</v-icon></strong></button>
                             <!-- se status non è "true" visualizzo una checkbox vuota -->
@@ -42,7 +42,7 @@
                             {{ item.name }} = {{ item.value}}
                         </li>
                     </ol>
-                    <p v-else class="text-center light-gray-bcg">Parameter list is empty!</p>
+                    <p v-else class="text-center light-gray-bcg">Parameters/Data list is empty!</p>
 
                 </v-card>
             </v-col>
@@ -79,7 +79,7 @@
                     <ol v-if="headerList.length">
                         <!-- ciclo l'array di oggetti "hederList" tramite un "v-for" -->
                         <li v-for="(item, index) in headerList" :key="index" :class="item.status  ? '' : 'disabled'">
-                            <button @click="removeHeader(item, index)"><v-icon>mdi-delete</v-icon></button>
+                            <button class="trash-hover" @click="removeHeader(item, index)"><v-icon>mdi-delete</v-icon></button>
                             <!-- se status è "true" visualizzo una checkbox marcata -->
                             <button @click="toggleHeader(index)" v-if="item.status"><strong><v-icon>mdi-check-box-outline</v-icon></strong></button>
                             <!-- se status non è "true" visualizzo una checkbox vuota -->
@@ -190,5 +190,10 @@ export default {
 .disabled {
     color: $disabled-gray-color;
     font-style: italic;
+}
+.trash-hover i:hover {
+    color: red;
+    transform: scale(1.2);
+    transition: 0.3s ease-in-out;
 }
 </style>;

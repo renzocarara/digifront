@@ -54,15 +54,6 @@ export default new Vuex.Store({
         getHeaderList(state) {
             return state.headerList;
         },
-        getInputUrlInfos(state) {
-            return state.inputUrlInfos;
-        },
-        getResponses(state) {
-            return state.responses;
-        },
-        getRedirects(state) {
-            return state.redirects;
-        },
         getStatusCode(state) {
             return state.statusCode;
         },

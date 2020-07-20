@@ -41,7 +41,6 @@ const routes = [
         // con questa "guard" blocco eventuali tentativi dell'utente di modificare l'URL nella barra indirizzi,
         // inserendo un indirizzo interpretabile per la rotta "read", se succede l'utente viene rediretto alla "home"
         beforeEnter(to, from, next) {
-            // console.log('prima di beforeEnter progNav è:', store.state.progNav);
             if (store.state.progNav) {
                 // il flag indica che il cambio di rotta è consentito, vado sulla rotta richiesta
                 next();

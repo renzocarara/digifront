@@ -57,7 +57,7 @@ export default {
 
     computed: {
         idsLength() {
-            console.log('ids length:', this.$store.state.idsList.length);
+            // console.log('ids length:', this.$store.state.idsList.length);
             return this.$store.state.idsList.length;
         }
     },
@@ -84,11 +84,11 @@ export default {
                     }
                 })
                     .then(response => {
-                        console.log('GET by id SUCCESS');
+                        // console.log('GET by id SUCCESS');
                         this.handleSuccess(response);
                     })
                     .catch(error => {
-                        console.log('GET by id FAILED');
+                        // console.log('GET by id FAILED');
                         this.handleError(error);
                     });
             }

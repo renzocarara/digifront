@@ -70,7 +70,10 @@ export const STATUS_CODES = {
         statusText: 'Unavailable For Legal Reasons',
         descriptiveText: ''
     },
-    '500': { statusText: 'Internal Server Error', descriptiveText: '' },
+    '500': {
+        statusText: 'Internal Server Error',
+        descriptiveText: 'Server could not manage your request!'
+    },
     '501': {
         statusText: 'Not Implemented',
         descriptiveText: 'The method is not supported!'
