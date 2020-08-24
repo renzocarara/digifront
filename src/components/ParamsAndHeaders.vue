@@ -154,7 +154,7 @@ export default {
             this.$store.commit('SET_PL_REMOVE_ITEM', index);
         },
         addHeader() {
-            // verifico che i campi di input non siano vuoti (ouò succedere quando viene premuto RETURN )
+            // verifico che i campi di input non siano vuoti (può succedere quando viene premuto RETURN )
             this.hName = this.hName.trim(); // trimmo l'input
             if (this.hName != '' && this.hValue != '') {
                 // costruisco il nuovo oggetto da inserire nell'array
